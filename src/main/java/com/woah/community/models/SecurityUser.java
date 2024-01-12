@@ -1,8 +1,10 @@
 package com.woah.community.models;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public class SecurityUser implements UserDetails {
@@ -14,27 +16,40 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Arrays.stream(user
+                .getRoles()
+                .split(","))
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return user.getUsername();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        if(user.getInactiveFlag().equals("Y")) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        if(user.getIsLocked().equals("N")){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -44,6 +59,10 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        if(user.getInactiveFlag().equals("Y")){
+            return false;
+        } else {
+            return true;
+        }
     }
 }

@@ -1,10 +1,9 @@
 package com.woah.community.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name="users")
@@ -18,7 +17,15 @@ public class User {
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    private Date createdAt;
 
+    private String inactiveFlag;
+
+    private Date lastLogin;
+
+    private String roles;
+
+    private String isLocked;
 
     public User() {
 
@@ -31,6 +38,10 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+        this.createdAt = new Date();
+        this.inactiveFlag = "N";
+        this.lastLogin = new Date();
+        this.roles = null;
     }
 
     public Long getId() {
@@ -87,6 +98,71 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+
+    }
+
+    public void setCreatedAt() {
+        this.createdAt = new Date();
+    }
+
+    public String getInactiveFlag() {
+        return inactiveFlag;
+    }
+
+    public void setInactiveFlag(String inactiveFlag) {
+        this.inactiveFlag = inactiveFlag;
+    }
+
+    public Date getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public void setLastLogin() {
+        this.lastLogin = new Date();
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(String role){
+        Set<String> roleTypes = Set.of("USER", "MEMBER", "SHARP", "COMMUNITY_OWNER", "ADMIN", "GAVEMASTER");
+
+        if (!roleTypes.contains(role)) {
+            throw new IllegalArgumentException("Invalid role type");
+        }else{
+            if (this.roles == null) {
+                this.roles = role;
+            } else {
+                this.roles += "," + role;
+            }
+
+        }
+
+    }
+
+    public String getIsLocked() {
+        return isLocked;
+    }
+
+    public void setIsLocked(String isLocked) {
+        this.isLocked = isLocked;
     }
 }
 
