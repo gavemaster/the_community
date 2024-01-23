@@ -1,7 +1,7 @@
 package com.woah.community;
 
-import com.woah.community.models.User;
-import com.woah.community.repositories.UserRepository;
+import com.woah.community.user.User;
+import com.woah.community.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
