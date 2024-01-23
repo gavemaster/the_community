@@ -1,5 +1,10 @@
 package com.woah.community.user;
 
+import com.woah.community.payment.Payment;
+import com.woah.community.member.Member;
+import com.woah.community.sharp.Sharp;
+import com.woah.community.subscription.Subscription;
+import com.woah.community.admin.Admin;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @Builder
@@ -42,19 +48,29 @@ public class User {
 
     private Date lastLogin;
 
-    private String memberId;
 
-    private String sharpId;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Member member;
 
-    private String adminId;
 
-    private String subscriptionId;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Sharp sharp;
 
-    private String roles;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Admin admin;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Subscription subscription;
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Payment> payments;
+
 
     private String isLocked;
 
-
+    private String roles;
 
 
     public User(String username, String password, String email, String firstName, String lastName, String phoneNumber) {
@@ -68,10 +84,23 @@ public class User {
         this.inactiveFlag = "N";
         this.lastLogin = new Date();
         this.roles = "ROLE_USER";
-        this.memberId = null;
-        this.sharpId = null;
-        this.adminId = null;
+        this.member = null;
+        this.sharp = null;
+        this.admin = null;
         this.isLocked = "N";
+    }
+
+
+    public void updateRoles(){
+        if(this.member != null){
+            this.roles += ",ROLE_MEMBER";
+        } else if (this.sharp != null) {
+            this.roles +=",ROLE_MEMBER,ROLE_SHARP";
+        }
+
+        if(this.admin != null){
+            this.roles +=",ROLE_ADMIN";
+        }
     }
 
 
